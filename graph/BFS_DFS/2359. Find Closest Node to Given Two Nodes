@@ -1,0 +1,87 @@
+Input: edges = [2,2,3,-1], node1 = 0, node2 = 1
+Output: 2
+Explanation: The distance from node 0 to node 2 is 1, and the distance from node 1 to node 2 is 1.
+The maximum of those two distances is 1. It can be proven that we cannot get a node with a smaller maximum distance than 1, so we return node 2
+
+Input: edges = [1,2,-1], node1 = 0, node2 = 2
+Output: 2
+Explanation: The distance from node 0 to node 2 is 2, and the distance from node 2 to itself is 0.
+The maximum of those two distances is 2. It can be proven that we cannot get a node with a smaller maximum distance than 2, so we return node 2.
+
+
+======================BFS=============================================================================
+
+int n;
+void bfs(vector<int> &edges, int startNode, vector<int> &dist_node){
+    queue<int>q;
+    q.push(startNode);
+    dist_node[startNode] = 0;
+    vector<bool> visited(n, false);
+    visited[startNode] = true;
+    while(!q.empty()){
+        int u = q.front();
+        q.pop();
+        int v= edges[u];
+        if(v!= -1 && !visited[v]){
+            visited[v] = true;
+            dist_node[v] = 1 + dist_node[u];
+            q.push(v);
+        }
+    }
+}
+    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+       n = edges.size();
+       vector<int>dist1(n, INT_MAX);
+       vector<int>dist2(n, INT_MAX);
+       bfs(edges, node1, dist1);
+       bfs(edges, node2, dist2);
+       int minDistNode = -1;
+       int minDistTillNow = INT_MAX;
+
+        for(int i=0; i<n; i++){
+            int maxD = max(dist1[i], dist2[i]);
+            if(minDistTillNow > maxD){
+                minDistNode = i;
+                minDistTillNow = maxD;
+            }
+        } return minDistNode;
+    }
+
+
+
+
+============DFS======================================================================
+int n;
+
+void dfs(vector<int> &edges, int startNode, vector<int> &dist_Node, vector<bool> &visited){
+    visited[startNode] = true;
+    int v = edges[startNode];
+    if(v != -1 && !visited[v]){
+        visited[v] = true;
+        dist_Node[v] = 1 + dist_Node[startNode];
+        dfs(edges, v, dist_Node, visited);
+    }
+}
+
+    int closestMeetingNode(vector<int>& edges, int node1, int node2) {
+        int n= edges.size();
+      vector<int> dist1(n, INT_MAX);
+      vector<int>dist2(n, INT_MAX);
+      vector<bool>visited1(n, false);
+      vector<bool>visited2(n, false);
+      dist1[node1] = 0;
+      dist2[node2] = 0;
+      dfs(edges, node1, dist1, visited1);
+      dfs(edges, node2, dist2, visited2);
+
+      int minDistNode = -1;
+      int minDistTillNow = INT_MAX;
+      for(int i=0; i<n; i++){
+        int maxD = max(dist1[i], dist2[i]);
+        if(minDistTillNow > maxD){
+            minDistNode = i;
+          minDistTillNow = maxD;
+        }
+      }   return minDistNode;
+    }
+};
