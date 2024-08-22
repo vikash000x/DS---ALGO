@@ -1,0 +1,47 @@
+Input: n = 2
+Output: 2
+Explanation: 
+The first beautiful arrangement is [1,2]:
+    - perm[1] = 1 is divisible by i = 1
+    - perm[2] = 2 is divisible by i = 2
+The second beautiful arrangement is [2,1]:
+    - perm[1] = 2 is divisible by i = 1
+    - i = 2 is divisible by perm[2] = 1
+Example 2:
+
+Input: n = 1
+Output: 1
+
+
+class Solution {
+public:
+int result = 0;
+
+void dfs(vector<int> &vec, int pos, int n){
+    if(pos > n) {
+        result++;
+        return;
+    }
+    for(int i= pos; i<=n; i++){
+        if(vec[i]%pos==0 || pos%vec[i]==0){
+            swap(vec[i], vec[pos]);
+            dfs(vec, pos+1, n);
+            swap(vec[i], vec[pos]);
+        }
+    }
+} 
+
+
+    int countArrangement(int n) {
+
+        vector<int>vec(n+1);
+        for(int i=1; i<=n; i++)
+            vec[i] = i;
+
+            dfs(vec, 1, n);
+            return result;
+
+        
+        
+    }
+};
