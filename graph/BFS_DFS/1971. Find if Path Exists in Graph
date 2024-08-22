@@ -1,0 +1,63 @@
+Input: n = 3, edges = [[0,1],[1,2],[2,0]], source = 0, destination = 2
+Output: true
+Explanation: There are two paths from vertex 0 to vertex 2:
+- 0 → 1 → 2
+- 0 → 2
+
+Input: n = 6, edges = [[0,1],[0,2],[3,5],[5,4],[4,3]], source = 0, destination = 5
+Output: false
+Explanation: There is no path from vertex 0 to vertex 5.
+
+===================DFS======================================================================
+bool check(unordered_map<int, vector<int>> &mp, int node, int dest, vector<bool> &visited){
+    if(node==dest) return true;
+    if(visited[node]) return false;
+    visited[node]  = true;
+    for(auto &it : mp[node]){
+        if(check(mp, it, dest, visited)) return true;
+    }
+    return false;
+}
+
+    bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        if(source == destination) return true;
+        unordered_map<int, vector<int>>mp;
+        for(vector<int> &vec : edges){
+            int u = vec[0];
+            int v = vec[1];
+            mp[u].push_back(v);
+            mp[v].push_back(u);
+
+        }
+        vector<bool>visited(n, false);
+        return check(mp, source, destination, visited);
+    }
+
+==============================BFS===========================================================
+  bool validPath(int n, vector<vector<int>>& edges, int source, int destination) {
+        unordered_map<int, vector<int>>mp;
+        for(vector<int> &vec : edges){
+            int u = vec[0];
+            int v= vec[1];
+            mp[u].push_back(v);
+            mp[v].push_back(u);
+        }
+
+        vector<bool>visited(n, false);
+        queue<int>q;
+        q.push(source);
+        visited[source] = true;
+        while(!q.empty()){
+            int node = q.front();
+            q.pop();
+            if(node == destination) return true;
+
+            for(auto &it : mp[node]){
+                if(!visited[it]){
+                    q.push(it);
+                    visited[it] = true;
+                }
+            }
+        }
+        return false;
+    }
