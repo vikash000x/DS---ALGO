@@ -61,7 +61,8 @@ Only possible 2 unique permutations are
 
 2nd approach===================================================================
 
-
+class Solution {
+  public:
 vector<vector<int>>result;
   int N;
   void solve(vector<int>& arr, vector<bool>& used, vector<int>& temp, string tempstring){
