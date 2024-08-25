@@ -1,0 +1,40 @@
+Example 1:
+
+Input: n = 4, k = 2
+Output: [[1,2],[1,3],[1,4],[2,3],[2,4],[3,4]]
+Explanation: There are 4 choose 2 = 6 total combinations.
+Note that combinations are unordered, i.e., [1,2] and [2,1] are considered to be the same combination.
+Example 2:
+
+Input: n = 1, k = 1
+Output: [[1]]
+Explanation: There is 1 choose 1 = 1 total combination.
+
+class Solution {
+public:
+
+  void helper(int n, int k, vector<vector<int>>&ans,int ind, vector<int>&temp){
+
+      //base cond-- if comb. size becomes equal to k , add it to result and return
+      if(temp.size()== k){
+          ans.push_back(temp);
+          return;
+      }
+  
+   // generate comb. by selecting elem from ind to n
+      for(int i=ind; i<=n; i++){
+          temp.push_back(i); //include cur el in comb
+          helper(n, k, ans, i+1, temp); // recur to include the next elem
+          temp.pop_back(); //backtrack by removing the last added elem
+      }
+  }
+
+
+    vector<vector<int>> combine(int n, int k) {
+        vector<vector<int>>ans;
+        vector<int>temp;
+        helper(n, k, ans, 1, temp);
+        return ans;
+        
+    }
+};
