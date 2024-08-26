@@ -1,0 +1,38 @@
+Example 1:
+
+Input: n = 3
+Output: ["((()))","(()())","(())()","()(())","()()()"]
+Example 2:
+
+Input: n = 1
+Output: ["()"]
+
+class Solution {
+public:
+  
+    void helper(string curr, int o, int c, int n, vector<string>&res){
+        if(o==n && c==n){
+            res.push_back(curr);
+            return;
+        }
+
+        if(o<n){
+            helper(curr + '(', o+1, c, n, res);
+        }
+
+        if(o>c){
+            helper(curr + ')', o, c+1, n, res);
+        }
+    }
+
+    vector<string> generateParenthesis(int n) {
+
+        vector<string> res;
+        helper("", 0, 0, n, res);
+        return res;
+        
+    }
+};
+
+// close only when it open , it should be less than n,  take cnt to keep view,
+//
