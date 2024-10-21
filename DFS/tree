@@ -1,0 +1,218 @@
+using dfs perform inorder traversal : you know ek helper function me root, result vec is as parameter 
+ vector<int> inorderTraversal(TreeNode* root) {
+      vector<int> res;
+      helper(root, res);
+      return res;
+    }
+    void helper(TreeNode* root, vector<int>& res){
+        if(root){
+            helper(root->left, res);
+            res.push_back(root->val);
+            helper(root->right, res);
+
+        }
+    }
+===========================================================================================
+98. Validate Binary Search Tree
+vector <int> nodes;
+void inorder(TreeNode* root){
+  if(root->left) inorder(root->left);
+  nodes.push_back(root->val);
+  if(root->right) inorder(root->right);
+}
+    bool isValidBST(TreeNode* root) {
+         inorder(root);
+      for(int i=0; i<nodes.size()-1; i++)
+    
+      if(nodes[i] >= nodes[i+1]){
+      return false;
+      } return true;
+
+====================================================================================================
+99. Recover Binary Search Tree :  where the values of exactly two nodes of the tree were swapped by mistake. Recover the tree without changing its structure.
+void inorder (TreeNode* root, TreeNode* &prev, TreeNode* &x, TreeNode* &y) {
+        if (!root) return ;
+
+        inorder(root->left, prev, x, y);
+        if (prev && root->val < prev->val) {
+            if (!x) {
+                x = prev;
+                y = root;
+            }
+            else {
+                y = root;
+                return;
+            }
+        }
+        prev = root;
+        inorder(root->right, prev, x, y);
+    }
+    void recoverTree(TreeNode* root) {
+        TreeNode *prev = nullptr, *x = nullptr, *y = nullptr;
+        inorder (root, prev, x, y);
+        swap(x->val , y->val);
+    }
+
+==========================================================================================================
+
+100. Same Tree : just check in every traversion with some if condition like both root is null then true;
+if one then false; root value not equal then false; then   return   isSameTree(p->left, q->left) && isSameTree(p->right, q->right);
+
+==========================================================================================================
+
+101. Symmetric Tree: 
+ bool isMirror(TreeNode* left, TreeNode* right) {
+    if (!left && !right) return true;
+    if (!left || !right) return false;
+    return (left->val == right->val) && isMirror(left->left, right->right) && isMirror(left->right, right->left);
+}
+
+bool isSymmetric(TreeNode* root) {
+    if (!root) return true;
+    return isMirror(root->left, root->right);
+}
+
+============================================================================================================
+104. Maximum Depth of Binary Tree
+ int max_height(TreeNode* &root){
+        if(root==NULL){
+            return 0;
+        }
+        int l=max_height(root->left);
+        int r=max_height(root->right);
+        return max(l,r)+1;
+    }
+    int maxDepth(TreeNode* root) {
+        return max_height(root);
+    }
+
+===============================================================================================================
+110. Balanced Binary Tree
+
+int height(TreeNode* root){
+    if(!root) return 0;
+   int l = height(root->left);
+        if (l == -1) return -1;
+
+        int r = height(root->right);
+        if (r == -1)return -1;
+
+        if (abs(l - r) > 1) return -1;
+    return max(l, r)+1; 
+}
+    bool isBalanced(TreeNode* root) {
+        
+        return height(root) != -1;
+    }
+=========================================================================================================
+1593. Split a String Into the Max Number of Unique Substrings
+Input: s = "ababccc"
+Output: 5
+Explanation: One way to split maximally is ['a', 'b', 'ab', 'c', 'cc'].
+Splitting like ['a', 'b', 'a', 'b', 'c', 'cc'] is not valid as you have 'a' and 'b' multiple times.
+
+ int dfs(int start, string& s, unordered_set<string>& st) {
+        if (start == s.size())
+            return 0;
+        int maxsplit = 0;
+        for (int i = start + 1; i <= s.size(); i++) {
+            string substring = s.substr(start, i - start);
+            if (st.find(substring) == st.end()) {
+                st.insert(substring);
+                maxsplit = max(maxsplit, 1+dfs(i, s, st));
+                st.erase(substring);
+            }
+        } return maxsplit;
+    }
+    int maxUniqueSplit(string s) {
+        unordered_set<string> st;
+        return dfs(0, s, st);
+    }
+
+==============================================================================================================
+111. Minimum Depth of Binary Tree
+
+  int minDepth(TreeNode* root) {
+        if(!root) return 0;
+        if(!root->left) return 1+ minDepth(root->right);
+        if(!root->right) return 1+minDepth(root->left);
+        return 1+ min(minDepth(root->left), minDepth(root->right));
+
+    }
+============================================================================================================
+112. Path Sum==  return true if the tree has a root-to-leaf path such that adding up all the values along the path equals targetSum.
+
+  bool hasPathSum(TreeNode* root, int targetSum) {
+          if (!root) {
+            return false;
+        } 
+        if (!root->left && !root->right) {
+            return targetSum == root->val;
+        }
+          bool left_sum = hasPathSum(root->left, targetSum - root->val);
+        bool right_sum = hasPathSum(root->right, targetSum - root->val);
+        
+        return left_sum || right_sum;
+    }
+============================================================================================================
+113. Path Sum II== return all root-to-leaf paths where the sum of the node values in the path equals targetSum
+Input: root = [5,4,8,11,null,13,4,7,2,null,null,5,1], targetSum = 22
+Output: [[5,4,11,2],[5,8,4,5]]
+
+void dfs(TreeNode *root, int target, int curr, vector<int> ds, vector<vector<int>>& ans){
+    if(root==NULL) return;
+    curr+= root->val;
+    ds.push_back(root->val);
+    if(root->left==NULL && root->right==NULL && curr==target){
+        ans.push_back(ds);
+        return;
+    }
+    dfs(root->left, target, curr, ds, ans);
+    dfs(root->right, target, curr, ds, ans);
+    curr-=root->val;
+    ds.pop_back();
+    return;
+}
+    vector<vector<int>> pathSum(TreeNode* root, int targetSum) {
+        vector<vector<int>>ans;
+        vector<int>ds;
+        if(root==NULL) return ans;
+         dfs(root, targetSum, 0, ds, ans);
+        return ans;
+
+    }
+
+=============================================================================================================
+114. Flatten Binary Tree to Linked List==  right child pointer points to the next node in the list and the left child pointer is always null.
+Input: root = [1,2,5,3,4,null,6]
+Output: [1,null,2,null,3,null,4,null,5,null,6]
+
+void flatten(TreeNode* root) {
+        helper(root);
+    }
+    void helper(TreeNode* root) {
+        if(root==nullptr) return;
+         
+        TreeNode* tmp = root->right;
+        root->right = root->left;
+        root->left = nullptr;
+        
+        TreeNode* dummy = root;
+        while(dummy->right){
+            dummy = dummy->right;
+        }
+        dummy->right = tmp;
+        helper(root->right);
+        
+    }
+===========================================================================================================
+
+
+
+
+
+
+
+
+
+
