@@ -207,9 +207,58 @@ void flatten(TreeNode* root) {
     }
 ===========================================================================================================
 
+2641. Cousins in Binary Tree II
+Input: root = [5,4,9,1,10,null,7]
+Output: [0,0,0,7,7,null,11]
+Explanation: The diagram above shows the initial binary tree and the binary tree after changing the value of each node.
+- Node with value 5 does not have any cousins so its sum is 0.
+- Node with value 4 does not have any cousins so its sum is 0.
+- Node with value 9 does not have any cousins so its sum is 0.
+- Node with value 1 has a cousin with value 7 so its sum is 7.
+- Node with value 10 has a cousin with value 7 so its sum is 7.
+- Node with value 7 has cousins with values 1 and 10 so its sum is 11.
 
-
-
+TreeNode* replaceValueInTree(TreeNode* root) {
+        if (root==NULL) return root;
+        queue<TreeNode*>q;
+        q.push(root);
+        vector<int>ls;
+        while(!q.empty()){
+            int n = q.size();
+            int currs = 0;
+            while(n--){
+                TreeNode* curr = q.front();
+                q.pop();
+                currs += curr->val;
+                if(curr->left) q.push(curr->left);
+                if(curr->right) q.push(curr->right);
+            }
+            ls.push_back(currs);
+        }
+      
+        q.push(root);
+        root->val = 0;
+        int i =1;
+        while(!q.empty()){
+            int n = q.size();
+            while(n--){
+            TreeNode* curr = q.front();
+            q.pop();
+            int siblings = curr->left!=NULL ? curr->left->val : 0;
+            siblings += curr->right!=NULL ? curr->right->val : 0;
+            if(curr->left) {
+                curr->left->val = ls[i]-siblings;
+                q.push(curr->left);
+            }
+            if(curr->right){
+                curr->right->val = ls[i]-siblings;
+                q.push(curr->right);
+            }
+        }
+        i++;
+        
+    } return root;
+    }
 
 
 
